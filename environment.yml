@@ -10,3 +10,4 @@ dependencies:
   - seaborn=0.13.2
   - python=3.12
   - ipykernel=6.30.1
+  - pingouin=0.5.5
