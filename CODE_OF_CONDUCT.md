@@ -25,3 +25,23 @@ Our goal is to ensure every member of this project feels safe, valued, and empow
 -Ask questions openly and support one another’s learning
 
 -Take responsibility for their contributions to the project
+
+Unacceptable Behaviour
+
+-The following behaviours will not be tolerated in this project:
+
+-Harassment, bullying, or intimidation in any form
+
+-Discriminatory comments, jokes, or actions
+
+-Personal attacks, name-calling, or unprofessional tone
+
+-Dismissing or belittling others’ ideas
+
+-Sharing confidential or sensitive information (including dataset privacy violations)
+
+-Deliberately undermining project progress
+
+-Inappropriate or offensive communication
+
+-Any behaviour that causes another team member to feel unsafe, excluded, or disrespected
