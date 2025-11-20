@@ -65,3 +65,17 @@ Individuals involved
 Any evidence (screenshots, messages, etc.)
 
 All reports will be reviewed confidentially and with sensitivity.
+
+5. Fostering a Positive and Supportive Team Culture
+
+-At Group 42, we want everyone to feel excited, motivated, and comfortable contributing. To create a supportive environment, we encourage:
+
+-Celebrating contributions: Recognize and appreciate the effort of every team member, no matter how small.
+
+-Encouraging curiosity: Ask questions freely — there are no “silly” questions when learning together.
+
+-Sharing knowledge: Help each other understand concepts, code, and data analysis techniques.
+
+-Being patient and kind: Everyone works at their own pace; respect each other’s learning journey.
+
+-Having fun: Collaboration can be enjoyable — don’t forget to laugh and enjoy the process!
