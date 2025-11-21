@@ -16,7 +16,15 @@ The data was sourced from KEEL (Knowledge Extraction based on Evolutionary Learn
 
 ## Dependencies
 
-- a list of the dependencies needed to run your analysis
+- matplotlib=3.10.6
+- altair=5.5.0
+- requests=2.32.4
+- pandas=2.3.2
+- scikit-learn=1.7.2
+- seaborn=0.13.2
+- python=3.12
+- ipykernel=6.30.1
+- pingouin=0.5.5
 
 ## License
 
