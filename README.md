@@ -52,6 +52,7 @@ MIT license. See [the license file](LICENSE.md) for more information.
 ## References
 
 KEEL Diabetes Dataset (By KEEL). (n.d.). [Dataset]. https://sci2s.ugr.es/keel/dataset.php?cod=45
+
 Centers for Disease Control and Prevention. (2025, September 17). FASTSTATS - leading causes of death. Centers for Disease Control and Prevention. https://www.cdc.gov/nchs/fastats/leading-causes-of-death.htm
 
 World Health Organization. (n.d.). Diabetes. https://www.who.int/news-room/fact sheets/detail/diabetes
