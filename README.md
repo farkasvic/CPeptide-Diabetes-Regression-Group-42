@@ -18,6 +18,7 @@ First time running the project, run the following from the root of this reposito
 
 ```bash
 conda-lock install --name diabetesgroup42env conda-lock.yml
+conda activate diabetesgroup42env
 ```
 
 ### Running the Analysis
