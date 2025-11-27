@@ -13,5 +13,10 @@ dependencies:
   - pingouin=0.5.5
   - jupyterlab>=4.5.0
   - nb_conda_kernels>=2.5.1
-  - ipykernel
   - nbconvert
+  - pydantic
+  - pip
+  - pip:
+      - deepchecks
+      - great-expectations
+      - pandera
