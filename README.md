@@ -10,36 +10,33 @@ This analysis was created to answer the inferential question: 'When studying pat
 
 The data was sourced from KEEL (Knowledge Extraction based on Evolutionary Learning), which is an open source software tool containing datasets that can be used for knowledge data discovery. The chosen dataset is designed for regression analysis, taken from LIACC's repository. The objective of this data is to investigate how factors such as patient age and base deficit (a measure of metabolic acidosis) are associated with concentration of C-peptide, in order to further understand patterns of insulin-resistant Diabetes Mellitus in children.
 
-## Running the analysis
+## Dependencies
+
+- [Docker](https://www.docker.com/) is a container solution 
+used to manage the software dependencies for this project.
+The Docker image used for this project is based on the
+`condaforge/miniforge3:latest` image.
+Additional dependencies are specified in the [`Dockerfile`](Dockerfile).
+
+## Usage
 
 ### First Time Setup
 
-First time running the project, run the following from the root of this repository:
-
-```bash
-conda-lock install --name diabetesgroup42env conda-lock.yml
-conda activate diabetesgroup42env
-```
+1. [Install](https://www.docker.com/get-started/) and launch Docker on your computer.
+2. Clone this GitHub repository.
 
 ### Running the Analysis
 
-To run the analysis, run the following from the root of this repository:
+1. Navigate to the root of this project on your computer using the command line and enter the following command to update `conda-lock.yml`, create the environment, and build the Docker container.
 
-```bash
-jupyter lab
+``` 
+make all
 ```
 
-Open `notebooks/diabetes-analysis.ipynb` in Jupyter Lab and under Switch/Select Kernel choose "Python [conda env:diabetesgroup42env]".
+2. Launch Jupyter Lab by navigating to http://localhost:8888 on your web brower. Open `notebooks/diabetes-analysis.ipynb`.
 
-Next, under the "Kernel" menu click "Restart Kernel and Run All Cells...".
+3. Under the "Kernel" menu, click "Restart Kernel and Run All Cells...".
 
-## Dependencies
-
-conda (version 25.0.0 or higher)
-conda-lock (version 3.0.4 or higher)
-jupyterlab (version 4.0.0 or higher)
-nb_conda_kernels (version 2.5.1 or higher)
-Python and packages listed in environment.yml
 
 ## License
 
