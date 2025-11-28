@@ -1,4 +1,7 @@
 name: Update Lock Files and Build Docker Image
+permissions:
+  contents: read
+  pages: write 
 
 on:
   push:
@@ -51,8 +54,6 @@ jobs:
 
       # if the conda-lock.yml file has changed, push the changes to the repo
       - name: Commit and push lock file
-        permissions:
-          contents: write
         if: steps.check-changes.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
