@@ -1,4 +1,7 @@
 name: Update Lock Files and Build Docker Image
+permissions:
+  contents: write
+ 
 
 on:
   push:
