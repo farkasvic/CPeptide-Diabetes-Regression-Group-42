@@ -37,6 +37,11 @@ make all
 
 3. Under the "Kernel" menu, click "Restart Kernel and Run All Cells...".
 
+4. To stop running the Docker container, enter the following command in the command line:
+
+``` 
+make stop
+```
 
 ## License
 
