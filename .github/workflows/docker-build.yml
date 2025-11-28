@@ -1,7 +1,7 @@
 name: Update Lock Files and Build Docker Image
 permissions:
-  contents: read
-  pages: write 
+  contents: write
+ 
 
 on:
   push:
