@@ -29,23 +29,15 @@ def main(url, data_dir, output_file):
 
     file_path = os.path.join(data_dir, output_file)
   
-    print(f"Downloading data from {url}...")
     response = requests.get(url)
     
-
-    print(f"Saving zip file to {file_path}...")
     with open(file_path, "wb") as f:
         f.write(response.content)
     
-
-    print("Extracting .dat file from zip archive...")
     zip_bytes = BytesIO(response.content)
     
     with zipfile.ZipFile(zip_bytes, "r") as zip_ref:
-
         dat_files = [f for f in zip_ref.namelist() if f.endswith(".dat")]
-        
-        
         dat_content = zip_ref.read(dat_files[0]).decode("utf-8")
         
         output_dat_path = os.path.join(data_dir, dat_files[0])
