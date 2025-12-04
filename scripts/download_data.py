@@ -12,11 +12,10 @@ from io import BytesIO
 @click.option('--url', type=str, default='https://sci2s.ugr.es/keel/dataset/data/regression/diabetes.zip',
               help='URL to download the dataset from'
 )
-@click.option('--data-dir', type=str, default='data/processed', help='Directory to store downloaded and processed data')
-@click.option('--output-file', type=str, default='clean_diabetes.zip', help='Filename for the downloaded zip file')
+@click.option('--data-dir', type=str, default='data/raw', help='Directory to store downloaded and processed data')
 
 
-def main(url, data_dir, output_file):
+def main(url, data_dir):
     """
     Download and extract diabetes dataset from remote URL.
     
@@ -26,26 +25,23 @@ def main(url, data_dir, output_file):
     
     os.makedirs(data_dir, exist_ok=True)
     
-
-    file_path = os.path.join(data_dir, output_file)
   
     response = requests.get(url)
-    
-    with open(file_path, "wb") as f:
-        f.write(response.content)
+
     
     zip_bytes = BytesIO(response.content)
     
     with zipfile.ZipFile(zip_bytes, "r") as zip_ref:
         dat_files = [f for f in zip_ref.namelist() if f.endswith(".dat")]
         dat_content = zip_ref.read(dat_files[0]).decode("utf-8")
+        dat_filename = os.path.basename(dat_files[0])
         
-        output_dat_path = os.path.join(data_dir, dat_files[0])
-        with open(output_dat_path, 'w', encoding='utf-8') as f:
+        output_path = os.path.join(data_dir, dat_filename)
+        with open(output_path, 'w', encoding='utf-8') as f:
             f.write(dat_content)
         
-        print(f"✓ Downloaded and saved: {file_path}")
-        print(f"✓ Extracted .dat file: {output_dat_path}")
+        print(f"✓ Downloaded and saved: {output_path}")
+        print(f"✓ Extracted .dat file: {dat_filename}")
         print(f"✓ Dataset ready for processing")
 
 
