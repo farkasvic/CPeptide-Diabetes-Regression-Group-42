@@ -27,3 +27,22 @@ WORKDIR /workplace
 # run JupyterLab on container start
 # uses the jupyterlab from the install environment
 CMD ["conda", "run", "--no-capture-output", "-n", "dockerlock", "jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--IdentityProvider.token=''", "--ServerApp.password=''"]
+
+# Install Quarto
+
+ARG QUARTO_VERSION=1.8.26
+
+USER root
+
+
+RUN apt-get update && apt-get install -y wget gdebi-core && \
+    echo "Installing Quarto version ${QUARTO_VERSION} for architecture $(uname -m)" && \
+    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "arm64" ]; then \
+        wget https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-arm64.deb ; \
+    else \
+        wget https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb ; \
+    fi && \
+    gdebi -n quarto-${QUARTO_VERSION}-linux-*.deb && \
+    rm quarto-${QUARTO_VERSION}-linux-*.deb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
