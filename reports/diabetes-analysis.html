@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Regression Analysis of C-Peptide Dependence on Age and Base Deficit</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="diabetes-analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="diabetes-analysis_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="diabetes-analysis_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="diabetes-analysis_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="diabetes-analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="diabetes-analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="diabetes-analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="diabetes-analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="diabetes-analysis_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="diabetes-analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="diabetes-analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="diabetes-analysis_files/libs/bootstrap/bootstrap-1e118674f8eeaf0dc11d6faf9a2d8791.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#summary" id="toc-summary" class="nav-link active" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#question" id="toc-question" class="nav-link" data-scroll-target="#question">Question:</a></li>
+  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data Source:</a></li>
+  <li><a href="#data-structure" id="toc-data-structure" class="nav-link" data-scroll-target="#data-structure">Data Structure:</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a></li>
+  <li><a href="#download-data-into-data-directory" id="toc-download-data-into-data-directory" class="nav-link" data-scroll-target="#download-data-into-data-directory">Download Data into data/ directory</a></li>
+  <li><a href="#data-wrangling-and-cleaning" id="toc-data-wrangling-and-cleaning" class="nav-link" data-scroll-target="#data-wrangling-and-cleaning">Data Wrangling and Cleaning</a></li>
+  <li><a href="#data-integrity-check" id="toc-data-integrity-check" class="nav-link" data-scroll-target="#data-integrity-check">Data Integrity Check</a></li>
+  <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda">EDA</a></li>
+  <li><a href="#eda-summary" id="toc-eda-summary" class="nav-link" data-scroll-target="#eda-summary">EDA Summary:</a></li>
+  <li><a href="#modelling" id="toc-modelling" class="nav-link" data-scroll-target="#modelling">Modelling</a></li>
+  <li><a href="#model-diagnostics" id="toc-model-diagnostics" class="nav-link" data-scroll-target="#model-diagnostics">Model Diagnostics</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">DISCUSSION</a></li>
+  <li><a href="#summary-of-findings" id="toc-summary-of-findings" class="nav-link" data-scroll-target="#summary-of-findings">Summary of Findings</a></li>
+  <li><a href="#impact-of-findings" id="toc-impact-of-findings" class="nav-link" data-scroll-target="#impact-of-findings">Impact of Findings</a></li>
+  <li><a href="#future-questions-for-further-research" id="toc-future-questions-for-further-research" class="nav-link" data-scroll-target="#future-questions-for-further-research">Future Questions for Further Research</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="diabetes-analysis.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Regression Analysis of C-Peptide Dependence on Age and Base Deficit</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Julia Zhang, Jennifer Onyebuchi, Victoria Farkas &amp; Michael Kmetiuk </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>This study analyzes a dataset of children who were recently diagnosed with Type 1 diabetes to understand what factors affect how much insulin their bodies can still produce. It uses a log transformation of C-peptide concentration as a measure of remaining insulin production and examines how it relates to child’s age and a measure of blood acidity called base deficit. Using regression analysis, the study explores whether older children and those who had less base deficit at diagnosis retained more natural insulin production. Using a linear regression analysis, we found that age and base deficit are both factors that are linked to C-peptide levels.</p>
+</section>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Diabetes is a chronic disease in which the body is unable to properly regulate blood sugar. According to the World Health Organization (WHO), more than 830 million people worldwide, around one in ten people, live with diabetes (2024). It is also one of the top ten leading causes of death globally (CDC, 2023).</p>
+<p>WHO says: “Diabetes causes blindness, kidney failure, heart attacks, stroke and lower limb amputation […] Neither its cause nor the means to prevent it are known.” (2024)</p>
+<p>Type 1 diabetes, also called insulin-dependent diabetes, is a more serious form that usually starts in childhood. In Type 1 diabetes, the pancreas stops producing insulin, a hormone that allows sugar to move from the blood into the body’s cells. Without insulin, blood sugar rises to dangerous levels, and people need insulin injections to survive.</p>
+<p>When children are first diagnosed, not all of them have completely lost the ability to produce insulin. Children who retain some natural insulin production have easier time managing the disease. This raises an important question: What factors influence how much insulin a child’s body is still able to produce at diagnosis?</p>
+<p>For this study, we will specifically investigate the factors of age and base deficit. To answer this, we analyzed a dataset containing three measurements taken at or around the time of diagnosis:</p>
+<ul>
+<li>C-peptide level: A substance released in equal amounts to insulin. If C-peptide is present, it means the body is still producing some insulin.</li>
+<li>Age: According to previous research, age may be an important factor in explaining why some retain ability to produce small amounts of insulin.</li>
+<li>Base deficit: A measure of how acidic the blood is. Higher acidity means the child was more ill at diagnosis.</li>
+</ul>
+<p>The goal of this study is to determine how age and base deficit relate to C-peptide levels, which reflect the amount of insulin the pancreas is still making. Regression analysis is used to model how these predictors influence the log-transformed C-peptide concentration. This may help to understand the factors behind residual insulin production in children.</p>
+</section>
+<section id="question" class="level2">
+<h2 class="anchored" data-anchor-id="question">Question:</h2>
+<p>When studying patterns of insulin-dependent diabetes mellitus in children, is there a relationship between levels of serum C-Peptide and the factors of patient age and base deficit?</p>
+</section>
+<section id="data-source" class="level2">
+<h2 class="anchored" data-anchor-id="data-source">Data Source:</h2>
+<p>KEEL Diabetes Data Set</p>
+<p>The data was sourced from KEEL (Knowledge Extraction based on Evolutionary Learning), which is an open source software tool containing datasets that can be used for knowledge data discovery. The chosen dataset is designed for regression analysis, taken from LIACC’s repository. The objective of this data is to investigate how factors such as patient age and base deficit (a measure of metabolic acidosis) are associated with concentration of C-peptide, in order to further understand patterns of insulin-resistant Diabetes Mellitus in children.</p>
+</section>
+<section id="data-structure" class="level2">
+<h2 class="anchored" data-anchor-id="data-structure">Data Structure:</h2>
+<p><code>Age</code>: Patient Age, domain: [0.9, 15.6]</p>
+<p><code>Deficit</code>: Base Deficit, measure of acidity, domain: [-29.0, -0.2]</p>
+<p><code>C-peptide</code>: Logarithm of C-Peptide concentration (pmol/ml), domain: [3.0, 6.6]</p>
+</section>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<p>Multiple linear regression was used to model the relationship of age and base deficit to logarithm of C-peptide concentration in patients. The Python programming language (Van Rossum and Drake 2009) was used to perform the analysis.</p>
+</section>
+<section id="download-data-into-data-directory" class="level2">
+<h2 class="anchored" data-anchor-id="download-data-into-data-directory">Download Data into data/ directory</h2>
+<p>This code was adapted from Microsoft Copilot prompts: ’Use Python to download a data file from a download link into a directory, as a csv</p>
+</section>
+<section id="data-wrangling-and-cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling-and-cleaning">Data Wrangling and Cleaning</h2>
+<ol type="1">
+<li>original file downloads as .dat, ensure it fits with a .csv format by splitting with the ‘,’ delimiter and stripping lines beginning with ‘@’</li>
+<li>re-name columns since names were stripped away</li>
+<li>ensure data is the correct dtype</li>
+</ol>
+<p>Note: dtypes were set to float manually as they were downloaded as dtype: object</p>
+</section>
+<section id="data-integrity-check" class="level2">
+<h2 class="anchored" data-anchor-id="data-integrity-check">Data Integrity Check</h2>
+<p>Before running the full Deepchecks data integrity suite, the dataset was first validated for basic data quality to ensure a reliable foundation. These preliminary checks included:</p>
+<ul>
+<li>Correct column names (verifying that all required columns such as Age, Deficit, C_peptide are present.)</li>
+<li>No empty observations (confirming that there are no fully empty rows in the dataset.)</li>
+<li>Missingness not beyond expected threshold (ensuring that no column has more than 5% missing values.)</li>
+</ul>
+<p>These checks were implemented using Python and Pandera, allowing the dataset to pass basic validation before deeper analysis.</p>
+<p>Following these initial validations, the full Deepchecks data integrity suite was run, which further validated the data against checks such as: - correlations between features/explanatory variables - correlations between features - data types - single value observations - non-mixed nulls - string mismatches</p>
+<p>Note that checking category levels is irrelevant as dataset does not contain categorical variables. This validation suite also checks target distribution, as this analysis is running a regression test on non-split data.</p>
+</section>
+<section id="eda" class="level2">
+<h2 class="anchored" data-anchor-id="eda">EDA</h2>
+<div id="tbl-info" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="2">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-info-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Summary statistics of the dataframe
+</figcaption>
+<div aria-describedby="tbl-info-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 43 entries, 0 to 42
+Data columns (total 3 columns):
+ #   Column     Non-Null Count  Dtype  
+---  ------     --------------  -----  
+ 0   Age        43 non-null     float64
+ 1   Deficit    43 non-null     float64
+ 2   C_peptide  43 non-null     float64
+dtypes: float64(3)
+memory usage: 1.1 KB</code></pre>
+</div>
+</div>
+</figure>
+</div>
+<p>No null values, data types were set to float earlier</p>
+<div class="cell" data-execution_count="3">
+<div id="tbl-describe" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-describe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Dataset descriptive statistics
+</figcaption>
+<div aria-describedby="tbl-describe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div>
+
+
+<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Age</th>
+<th data-quarto-table-cell-role="th">Deficit</th>
+<th data-quarto-table-cell-role="th">C_peptide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">count</th>
+<td>43.000000</td>
+<td>43.000000</td>
+<td>43.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">mean</th>
+<td>9.032558</td>
+<td>-8.148837</td>
+<td>4.746512</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">std</th>
+<td>4.022539</td>
+<td>7.123080</td>
+<td>0.720565</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">min</th>
+<td>0.900000</td>
+<td>-29.000000</td>
+<td>3.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">25%</th>
+<td>5.500000</td>
+<td>-12.700000</td>
+<td>4.450000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">50%</th>
+<td>10.400000</td>
+<td>-7.800000</td>
+<td>4.900000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">75%</th>
+<td>11.850000</td>
+<td>-2.000000</td>
+<td>5.100000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">max</th>
+<td>15.600000</td>
+<td>-0.200000</td>
+<td>6.600000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>The mean patient age is approximately 9 years old, with the maximum age being approximately 16 and the minimum being 1. The C_peptide concentration average is about 4.75, mean Base Deficit value is -8.15 mEq/L. The standard deviation of Base Deficit is quite high, at about 7.12 mEq/L, while the standard deviations of the other two variables are within a reasonable range for their domains. This high variance could be due to the small size of the dataset.</p>
+<div id="fig-dist" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../results/figures/c_peptide_distribution.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Distribution of target variable, C_peptide
+</figcaption>
+</figure>
+</div>
+<div id="fig-scatter" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../results/figures/scatterplot_matrix.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Scatterplot matrix of all variables
+</figcaption>
+</figure>
+</div>
+<div id="fig-heatmap" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../results/figures/correlation_heatmap.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Correlation heatmap of variables
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="eda-summary" class="level2">
+<h2 class="anchored" data-anchor-id="eda-summary">EDA Summary:</h2>
+<p>Both features are positively associated with the target variable, <code>C_peptide</code>, at approximately equal magnitudes (0.46, 0.49). The distribution of the target variable is approximately normal, with most values clustered around 5.0. There does seem to be one or two outliers in scatterplots comparing the relationship between <code>Age</code> and <code>Deficit</code>, but as these are both non-target features this can be ignored for the sake of this analysis. There are no obvious outliers in the relationship between the target and its predictors.</p>
+</section>
+<section id="modelling" class="level2">
+<h2 class="anchored" data-anchor-id="modelling">Modelling</h2>
+<p>We use linear regression to model the relationship between <code>C_peptide</code> and covariates <code>Age</code> and <code>Deficit</code>.</p>
+<div class="cell" data-execution_count="4">
+<div id="tbl-linear_reg" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="4">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-linear_reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Linear Regression Intercept and Coefficients
+</figcaption>
+<div aria-describedby="tbl-linear_reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div>
+
+
+<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Unnamed: 0</th>
+<th data-quarto-table-cell-role="th">names</th>
+<th data-quarto-table-cell-role="th">coef</th>
+<th data-quarto-table-cell-role="th">se</th>
+<th data-quarto-table-cell-role="th">T</th>
+<th data-quarto-table-cell-role="th">pval</th>
+<th data-quarto-table-cell-role="th">r2</th>
+<th data-quarto-table-cell-role="th">adj_r2</th>
+<th data-quarto-table-cell-role="th">CI[2.5%]</th>
+<th data-quarto-table-cell-role="th">CI[97.5%]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>0</td>
+<td>Intercept</td>
+<td>4.479</td>
+<td>0.271</td>
+<td>16.533</td>
+<td>0.000</td>
+<td>0.368</td>
+<td>0.337</td>
+<td>3.932</td>
+<td>5.027</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>1</td>
+<td>Age</td>
+<td>0.066</td>
+<td>0.023</td>
+<td>2.865</td>
+<td>0.007</td>
+<td>0.368</td>
+<td>0.337</td>
+<td>0.020</td>
+<td>0.113</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2</td>
+<td>Deficit</td>
+<td>0.041</td>
+<td>0.013</td>
+<td>3.116</td>
+<td>0.003</td>
+<td>0.368</td>
+<td>0.337</td>
+<td>0.014</td>
+<td>0.067</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="model-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="model-diagnostics">Model Diagnostics</h2>
+<p>To check for Normality of residuals, we employ the Shapiro-Wilk test and Q-Q plot.</p>
+<div class="cell" data-execution_count="5">
+<div id="tbl-sharpiro" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="5">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-sharpiro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Shapiro-Wilk Test Results
+</figcaption>
+<div aria-describedby="tbl-sharpiro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div>
+
+
+<table class="dataframe do-not-create-environment cell caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Unnamed: 0</th>
+<th data-quarto-table-cell-role="th">W</th>
+<th data-quarto-table-cell-role="th">pval</th>
+<th data-quarto-table-cell-role="th">normal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>0</td>
+<td>0.988</td>
+<td>0.927</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div id="fig-qq" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../results/figures/qq_plot.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-qq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Q-Q Plot of Residuals
+</figcaption>
+</figure>
+</div>
+<p>To test for equal variance, we plot the residuals against the fitted values for the model.</p>
+<div id="fig-residual" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-residual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../results/figures/resid_plot.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-residual-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Residuals vs Fitted Values
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="discussion" class="level2">
+<h2 class="anchored" data-anchor-id="discussion">DISCUSSION</h2>
+</section>
+<section id="summary-of-findings" class="level2">
+<h2 class="anchored" data-anchor-id="summary-of-findings">Summary of Findings</h2>
+<p>The objective of this analysis was to determine if there is a linear relationship between serum C-peptide (log-transformed concentration, pmol/ml) and the factors of patient age (Age, years) and base deficit (Deficit, mEq/L) in children with insulin-dependent diabetes mellitus.</p>
+<p>A multiple linear regression model yielded the following key findings (Figure 6):</p>
+<p>Both predictor variables, Age (<span class="math inline">\(p=0.0066\)</span>) and Deficit (<span class="math inline">\(p=0.0034\)</span>), were found to be statistically significant in predicting the C-peptide level (using a typical <span class="math inline">\(\alpha = 0.05\)</span>). Age has a positive coefficient (<span class="math inline">\(\text{coef} = 0.066\)</span>), indicating that for every one-year increase in age, the log C-peptide concentration is expected to increase by 0.066 units, holding Deficit constant. Base deficit has a positive coefficient (<span class="math inline">\(\text{coef} = 0.041\)</span>), meaning that for every one <span class="math inline">\(\text{mEq/L}\)</span> increase in Deficit, the log C-peptide concentration is expected to increase by 0.041 units, holding Age constant. (Note: Since Deficit values are negative, an increase (closer to 0) signifies less severe metabolic acidosis.)</p>
+<p>The model achieved an adjusted <span class="math inline">\(R^2\)</span> of 0.337. This means that approximately 33.7% of the variance in the log C-peptide concentration is explained by the patient’s age and base deficit.</p>
+<p>When examining model assumptions, the diagnostic tests (Shapiro-Wilk <span class="math inline">\(p = 0.927\)</span> and Q-Q plot/Residuals vs.&nbsp;Fitted plot, Figures 7-9) shows that the key linear regression assumptions of normally distributed residuals and equal variance are reasonably met. While it is more difficult to confirm whether the observations are independent, we will assume so here for the purposes of our analysis.</p>
+<section id="expected-findings" class="level3">
+<h3 class="anchored" data-anchor-id="expected-findings">Expected Findings</h3>
+<p>The results showing that Age and Base Deficit are both positive predictors of C-peptide levels generally match what we expect in children with Type 1 Diabetes.</p>
+<p>Since C-peptide reflects how much insulin the body can still produce, the positive relationship with age suggests that older children in this dataset tend to have more remaining beta-cell function at the time of measurement. This is reasonable because some older children may lose beta-cells more slowly, or may still be in an early stage of the disease when some insulin production is preserved.</p>
+<p>The positive effect of base deficit here means that higher C-peptide levels are linked to a less severe Deficit (meaning a less severe case of DKA). This fits existing medical understanding: children who still produce some insulin are less likely to arrive with very severe metabolic disturbances compared to those whose beta-cells are almost fully destroyed. (Novac et al., 2023)</p>
+<p>The one surprising part of the results is the low R² value (0.337). Even though the model is statistically significant, it explains only a portion of the differences in C-peptide levels. This suggests that other factors, such as how long the child has had symptoms, their genetic markers, autoantibody levels, or initial glucose and HbA1c—also play important roles and should be included in future analyses.</p>
+</section>
+</section>
+<section id="impact-of-findings" class="level2">
+<h2 class="anchored" data-anchor-id="impact-of-findings">Impact of Findings</h2>
+<p>These results have several important implications for children with Type 1 diabetes:</p>
+<p>One is prognostic value: Because C-peptide is a strong indicator of long-term diabetes outcomes (such as the risk of low blood sugar and future complications), this analysis suggests that a child’s Age and Deficit at diagnosis can serve as easy-to-use markers for predicting how well they might manage the disease over time.</p>
+<p>The findings also show that the onset of Type 1 diabetes is not the same for all children. Those who are a bit older and arrive with less severe metabolic problems (a less negative Deficit) appear to belong to a group that still has better remaining insulin-producing ability.</p>
+<p>Knowing how Age and Deficit relate to C-peptide can help doctors tailor treatments more effectively. For example, children with higher predicted C-peptide levels might be better candidates for therapies designed to protect or support the remaining beta cells, since they already have some preserved function.</p>
+<p>Finally, the strong link between Deficit and C-peptide supports the idea that C-peptide is a reliable indicator of how severe insulin loss is at the time a child is diagnosed. (Maffeis et al., 2020)</p>
+</section>
+<section id="future-questions-for-further-research" class="level2">
+<h2 class="anchored" data-anchor-id="future-questions-for-further-research">Future Questions for Further Research</h2>
+<p>The results from this model raises several important follow-up questions:</p>
+<ol type="1">
+<li><p><strong>Non-Linear Effects and Interactions:</strong> Is the relationship between Age, Deficit, and C-peptide more complicated than a straight line? For example, does the effect of Deficit on C-peptide change depending on the child’s age, or would adding curved (quadratic) terms improve the model?</p></li>
+<li><p><strong>Longitudinal Data:</strong> Since this dataset is cross-sectional, we only see one point in time. How would the predictive power of Age and Deficit change if we tracked children over several years to see how quickly their C-peptide levels decline after diagnosis?</p></li>
+<li><p><strong>Adding More Predictors:</strong> Considering that the current model explains only about 34% of the variation, what extra value would we gain by including other medical factors—such as genetic markers (HLA types), autoantibodies, or initial blood glucose/HbA1c levels?</p></li>
+<li><p><strong>Effect of Transformations:</strong> Since our current model uses a log transformation of C-peptide. How would the results change if we modeled the raw (untransformed) C-peptide values?</p></li>
+</ol>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<p>Centers for Disease Control and Prevention. (2025, September 17). FASTSTATS - leading causes of death. Centers for Disease Control and Prevention. https://www.cdc.gov/nchs/fastats/leading-causes-of-death.htm</p>
+<p>Cleveland Clinic. (2025, July 22). C-peptide test: What it is, purpose, procedure &amp; results. https://my.clevelandclinic.org/health/diagnostics/24242-c-peptide-test</p>
+<p>KEEL Diabetes Dataset (By KEEL). (n.d.). [Dataset]. https://sci2s.ugr.es/keel/dataset.php?cod=45</p>
+<p>Van Rossum, Guido, and Fred L. Drake. 2009. Python 3 Reference Manual. Scotts Valley, CA: CreateSpace.</p>
+<p>World Health Organization. (n.d.). Diabetes. https://www.who.int/news-room/fact sheets/detail/diabetes</p>
+<p>Novac, C. N., Mihai, D.-A., Boboc, A. A., Platica, C., Nemuc, A., &amp; Radulian, G. (2023). Changes in C-Peptide Values in Children with Type 1 Diabetes—a Three-Year Study. Maedica (Bucureşti), 18(2), 182–189. https://doi.org/10.26574/maedica.2023.18.2.182</p>
+<p>Maffeis, C., Tomasselli, F., Tommasi, M., Bresadola, I., Trandev, T., Fornari, E., Marigliano, M., Morandi, A., Olivieri, F., &amp; Piona, C. (2020). Nutrition habits of children and adolescents with type 1 diabetes changed in a 10 years span. Pediatric Diabetes, 21(6), 960–968. https://pubmed.ncbi.nlm.nih.gov/32418262/</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
