@@ -1,4 +1,5 @@
 
+import os
 import pandas as pd
 import pandera as pa
 import click
@@ -49,6 +50,21 @@ schema_ranges = DataFrameSchema(
 
 
 def main(cleaned_data):
+
+    try:
+        actual_filename = os.path.basename(cleaned_data)
+        actual_extension = os.path.splitext(actual_filename)[1]
+        
+        assert actual_filename == "clean_diabetes.csv", \
+            f"Expected filename 'clean_diabetes.csv', but got '{actual_filename}'"
+        
+        assert actual_extension == ".csv", \
+            f"Expected file extension '.csv', but got '{actual_extension}'"
+        
+        print("✅ File format and name validation passed.")
+    except AssertionError as e:
+        print(f"❌ File validation failed: {e}")
+        return
   
     diabetes_df = pd.read_csv(cleaned_data)
 
