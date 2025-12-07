@@ -57,12 +57,12 @@ The data was sourced from KEEL (Knowledge Extraction based on Evolutionary Learn
 
 ## Data Structure:
 
-`Age`: Patient Age, domain: `{python} list((describe.loc['min','Age'],describe.loc['max','Age']))`
+`Age`: Patient Age, domain: `{python} f"[{describe.loc['min','Age']}, {describe.loc['max','Age']}]"`
 
 
-`Deficit`: Base Deficit, measure of acidity, domain: `{python} list((describe.loc['min','Deficit'],describe.loc['max','Deficit']))`
+`Deficit`: Base Deficit, measure of acidity, domain: `{python} f"[{describe.loc['min','Deficit']}, {describe.loc['max','Deficit']}]"`
 
-`C-peptide`: Logarithm of C-Peptide concentration (pmol/ml), domain: `{python} list((describe.loc['min','C_peptide'],describe.loc['max','C_peptide']))`
+`C-peptide`: Logarithm of C-Peptide concentration (pmol/ml), domain: `{python} f"[{describe.loc['min','C_peptide']}, {describe.loc['max','C_peptide']}]"`
 
 ## Methods
 
@@ -90,7 +90,14 @@ Before running the full Deepchecks data integrity suite, the dataset was first v
 
 These checks were implemented using Python and Pandera, allowing the dataset to pass basic validation before deeper analysis.
 
-Following these initial validations, the full Deepchecks data integrity suite was run, which further validated the data against checks such as: - correlations between features/explanatory variables - correlations between features - data types - single value observations - non-mixed nulls - string mismatches
+Following these initial validations, the full Deepchecks data integrity suite was run, which further validated the data against checks such as: 
+
+- correlations between features/explanatory variables 
+- correlations between features 
+- data types 
+- single value observations 
+- non-mixed nulls 
+- string mismatches
 
 Note that checking category levels is irrelevant as dataset does not contain categorical variables. This validation suite also checks target distribution, as this analysis is running a regression test on non-split data.
 
@@ -102,7 +109,7 @@ Note that checking category levels is irrelevant as dataset does not contain cat
 cleaned_data.info()
 ```
 
-No null values, data types were set to float earlier
+No null values, data types were set to float earlier.
 
 ```{python}
 #| label: tbl-describe
@@ -110,7 +117,7 @@ No null values, data types were set to float earlier
 describe
 ```
 
-The mean patient age is approximately `{python} round(describe.loc['mean','Age'])` years old, with the maximum age being approximately `{python} round(describe.loc['max','Age'])` and the minimum being `{python} round(describe.loc['min','Age'])`. The C_peptide concentration average is about `{python} round(describe.loc['mean','C_peptide'], 2)`, mean Base Deficit value is `{python} round(describe.loc['mean','Deficit'], 2)` mEq/L. The standard deviation of Base Deficit is quite high, at about `{python} round(describe.loc['std','Deficit'], 2)` mEq/L, while the standard deviations of the other two variables are within a reasonable range for their domains. This high variance could be due to the small size of the dataset.
+The mean patient age is approximately `{python} round(describe.loc['mean','Age'])` years old, with the maximum age being approximately `{python} round(describe.loc['max','Age'])` and the minimum being `{python} round(describe.loc['min','Age'])`. The C_peptide concentration average is about `{python} f"{round(describe.loc['mean','C_peptide'], 2)}"`, mean Base Deficit value is `{python} f"{round(describe.loc['mean','Deficit'], 2)}"` mEq/L. The standard deviation of Base Deficit is quite high, at about `{python} f"{round(describe.loc['std','Deficit'], 2)}"` mEq/L, while the standard deviations of the other two variables are within a reasonable range for their domains. This high variance could be due to the small size of the dataset.
 
 ![Distribution of target variable, C_peptide](../results/figures/c_peptide_distribution.png){#fig-dist}
 
@@ -120,7 +127,7 @@ The mean patient age is approximately `{python} round(describe.loc['mean','Age']
 
 ## EDA Summary:
 
-Both features are positively associated with the target variable, `C_peptide`, at approximately equal magnitudes `{python} round(corr.loc['C_peptide','Age'], 2), round(corr.loc['C_peptide','Deficit'], 2)`. The distribution of the target variable is approximately normal, with most values clustered around 5.0. There does seem to be one or two outliers in scatterplots comparing the relationship between `Age` and `Deficit`, but as these are both non-target features this can be ignored for the sake of this analysis. There are no obvious outliers in the relationship between the target and its predictors.
+Both features are positively associated with the target variable, `C_peptide`, at approximately equal magnitudes `{python} f"({round(corr.loc['C_peptide','Age'], 2)}, {round(corr.loc['C_peptide','Deficit'], 2)})"`. The distribution of the target variable is approximately normal, with most values clustered around 5.0. There does seem to be one or two outliers in scatterplots comparing the relationship between `Age` and `Deficit`, but as these are both non-target features this can be ignored for the sake of this analysis. There are no obvious outliers in the relationship between the target and its predictors.
 
 ## Modelling
 
@@ -151,7 +158,7 @@ To test for equal variance, we plot the residuals against the fitted values for 
 
 ![Residuals vs Fitted Values](../results/figures/resid_plot.png){#fig-residual}
 
-## DISCUSSION
+## Discussion
 
 ## Summary of Findings
 

@@ -2392,9 +2392,9 @@ window.Quarto = {
 </section>
 <section id="data-structure" class="level2">
 <h2 class="anchored" data-anchor-id="data-structure">Data Structure:</h2>
-<p><code>Age</code>: Patient Age, domain: [np.float64(0.9), np.float64(15.6)]</p>
-<p><code>Deficit</code>: Base Deficit, measure of acidity, domain: [np.float64(-29.0), np.float64(-0.2)]</p>
-<p><code>C-peptide</code>: Logarithm of C-Peptide concentration (pmol/ml), domain: [np.float64(3.0), np.float64(6.6)]</p>
+<p><code>Age</code>: Patient Age, domain: [0.9, 15.6]</p>
+<p><code>Deficit</code>: Base Deficit, measure of acidity, domain: [-29.0, -0.2]</p>
+<p><code>C-peptide</code>: Logarithm of C-Peptide concentration (pmol/ml), domain: [3.0, 6.6]</p>
 </section>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
@@ -2422,7 +2422,15 @@ window.Quarto = {
 <li>Missingness not beyond expected threshold (ensuring that no column has more than 5% missing values.)</li>
 </ul>
 <p>These checks were implemented using Python and Pandera, allowing the dataset to pass basic validation before deeper analysis.</p>
-<p>Following these initial validations, the full Deepchecks data integrity suite was run, which further validated the data against checks such as: - correlations between features/explanatory variables - correlations between features - data types - single value observations - non-mixed nulls - string mismatches</p>
+<p>Following these initial validations, the full Deepchecks data integrity suite was run, which further validated the data against checks such as:</p>
+<ul>
+<li>correlations between features/explanatory variables</li>
+<li>correlations between features</li>
+<li>data types</li>
+<li>single value observations</li>
+<li>non-mixed nulls</li>
+<li>string mismatches</li>
+</ul>
 <p>Note that checking category levels is irrelevant as dataset does not contain categorical variables. This validation suite also checks target distribution, as this analysis is running a regression test on non-split data.</p>
 </section>
 <section id="eda" class="level2">
@@ -2448,7 +2456,7 @@ memory usage: 1.1 KB</code></pre>
 </div>
 </figure>
 </div>
-<p>No null values, data types were set to float earlier</p>
+<p>No null values, data types were set to float earlier.</p>
 <div class="cell" data-execution_count="3">
 <div id="tbl-describe" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -2456,7 +2464,7 @@ memory usage: 1.1 KB</code></pre>
 Table 2: Dataset descriptive statistics
 </figcaption>
 <div aria-describedby="tbl-describe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="73">
+<div class="cell-output cell-output-display" data-execution_count="154">
 <div>
 
 
@@ -2527,7 +2535,7 @@ Table 2: Dataset descriptive statistics
 </figure>
 </div>
 </div>
-<p>The mean patient age is approximately 9 years old, with the maximum age being approximately 16 and the minimum being 1. The C_peptide concentration average is about np.float64(4.75), mean Base Deficit value is np.float64(-8.15) mEq/L. The standard deviation of Base Deficit is quite high, at about np.float64(7.12) mEq/L, while the standard deviations of the other two variables are within a reasonable range for their domains. This high variance could be due to the small size of the dataset.</p>
+<p>The mean patient age is approximately 9 years old, with the maximum age being approximately 16 and the minimum being 1. The C_peptide concentration average is about 4.75, mean Base Deficit value is -8.15 mEq/L. The standard deviation of Base Deficit is quite high, at about 7.12 mEq/L, while the standard deviations of the other two variables are within a reasonable range for their domains. This high variance could be due to the small size of the dataset.</p>
 <div id="fig-dist" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -2561,7 +2569,7 @@ Figure 3: Correlation heatmap of variables
 </section>
 <section id="eda-summary" class="level2">
 <h2 class="anchored" data-anchor-id="eda-summary">EDA Summary:</h2>
-<p>Both features are positively associated with the target variable, <code>C_peptide</code>, at approximately equal magnitudes (np.float64(0.46), np.float64(0.49)). The distribution of the target variable is approximately normal, with most values clustered around 5.0. There does seem to be one or two outliers in scatterplots comparing the relationship between <code>Age</code> and <code>Deficit</code>, but as these are both non-target features this can be ignored for the sake of this analysis. There are no obvious outliers in the relationship between the target and its predictors.</p>
+<p>Both features are positively associated with the target variable, <code>C_peptide</code>, at approximately equal magnitudes (0.46, 0.49). The distribution of the target variable is approximately normal, with most values clustered around 5.0. There does seem to be one or two outliers in scatterplots comparing the relationship between <code>Age</code> and <code>Deficit</code>, but as these are both non-target features this can be ignored for the sake of this analysis. There are no obvious outliers in the relationship between the target and its predictors.</p>
 </section>
 <section id="modelling" class="level2">
 <h2 class="anchored" data-anchor-id="modelling">Modelling</h2>
@@ -2573,7 +2581,7 @@ Figure 3: Correlation heatmap of variables
 Table 3: Linear Regression Intercept and Coefficients
 </figcaption>
 <div aria-describedby="tbl-linear_reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="74">
+<div class="cell-output cell-output-display" data-execution_count="155">
 <div>
 
 
@@ -2653,7 +2661,7 @@ Table 3: Linear Regression Intercept and Coefficients
 Table 4: Shapiro-Wilk Test Results
 </figcaption>
 <div aria-describedby="tbl-sharpiro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="75">
+<div class="cell-output cell-output-display" data-execution_count="156">
 <div>
 
 
