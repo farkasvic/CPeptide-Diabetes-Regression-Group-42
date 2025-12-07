@@ -9,8 +9,6 @@ help: ## Show this help message
 all: ## runs the targets: cl, build
 	make cl
 	make build
-	make run
-	make files
 
 .PHONY: cl
 cl: ## create conda lock for multiple platforms
