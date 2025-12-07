@@ -136,7 +136,7 @@ We use linear regression to model the relationship between `C_peptide` and covar
 ```{python}
 #| label: tbl-linear_reg
 #| tbl-cap: Linear Regression Intercept and Coefficients
-linear_reg = pd.read_csv("../results/tables/model_summary.csv")
+linear_reg = pd.read_csv("../results/tables/model_summary.csv", index_col=0)
 linear_reg
 ```
 
@@ -148,7 +148,7 @@ To check for Normality of residuals, we employ the Shapiro-Wilk test and Q-Q plo
 ```{python}
 #| label: tbl-sharpiro
 #| tbl-cap: Shapiro-Wilk Test Results
-shapiro = pd.read_csv("../results/tables/shapiro_wilk.csv")
+shapiro = pd.read_csv("../results/tables/shapiro_wilk.csv", index_col=0)
 shapiro
 ```
 
