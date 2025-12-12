@@ -103,7 +103,6 @@ def main(cleaned_data):
     except Exception as e:
         print(f"Range/duplicate validation failed: {e}")
 
-
 if __name__ == "__main__":
     main()
 
