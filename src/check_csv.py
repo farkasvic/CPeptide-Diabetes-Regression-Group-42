@@ -19,3 +19,15 @@ def check_csv(filepath: str, expected_filename: str, expected_extension: str):
     AssertionError
         If the filename or extension does not match the expected values.
     """
+    # Extracting the base filename
+    actual_filename = os.path.basename(filepath)
+    
+    # Extracting the file extension (e.g., '.csv')
+    actual_extension = os.path.splitext(actual_filename)[1]
+    
+    # Using assert for validation checks
+    assert actual_filename == expected_filename, \
+        f"Expected filename '{expected_filename}', but got '{actual_filename}'"
+        
+    assert actual_extension == expected_extension, \
+        f"Expected file extension '{expected_extension}', but got '{actual_extension}'"
