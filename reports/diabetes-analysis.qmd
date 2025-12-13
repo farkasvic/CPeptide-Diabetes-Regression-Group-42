@@ -7,6 +7,8 @@ format:
     toc: true
     toc-depth: 2
     self-contained: true
+    fig-width: 3
+    fig-height: 2
   pdf:
     toc: true
     toc-depth: 2
