@@ -21,6 +21,7 @@ from src.check_csv import check_csv
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="pkg_resources")
 
 
 expected_columns = ["Age", "Deficit", "C_peptide"]
