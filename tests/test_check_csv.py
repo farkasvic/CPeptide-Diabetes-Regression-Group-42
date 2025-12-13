@@ -84,8 +84,6 @@ def test_case_sensitivity_filename(test_data_dir):
     with pytest.raises(AssertionError, match="Expected filename 'Clean_Diabetes.csv'"):
         check_csv(filepath, 'Clean_Diabetes.csv', '.csv')
 
-
-
 # Parameterized test cases
 
 @pytest.mark.parametrize("wrong_ext", ['.txt', '.xlsx', '.json', ''])
